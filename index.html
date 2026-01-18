@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- PWA用設定 -->
+    <meta name="theme-color" content="#1F292E">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    
+    <title>経費入力</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* CSSは前回と同じですが、PWA用の微調整を含んでいます */
+        :root {
+            --bg-color: #1F292E;
+            --card-bg: #27353A;
+            --input-bg: #191F22;
+            --text-main: #FFFFFF;
+            --text-sub: #B0B5B9;
+            --accent-green: #06C755;
+            --border-color: #3A474D;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding-bottom: 140px;
+            /* iPhoneなどのセーフエリア対応 */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: calc(140px + env(safe-area-inset-bottom));
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-title {
+            font-size: 18px;
+            font-weight: bold;
+            flex-grow: 1;
+            margin-left: 20px;
+        }
+        .icon-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 20px;
+            cursor: pointer;
+        }
+        .icon-sub { color: #5F7D8B; }
+
+        .container { padding: 10px 15px; }
+        .section-title {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin: 15px 0 8px 5px;
+        }
+        .grid-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+        }
+        .label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #DDDDDD;
+        }
+        .input-wrapper {
+            position: relative;
+            background-color: var(--input-bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            border: 1px solid #333;
+        }
+        .input-wrapper:focus-within { border-color: #555; }
+        input[type="number"] {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            padding: 12px 25px 12px 5px;
+            outline: none;
+        }
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        .unit {
+            position: absolute;
+            right: 10px;
+            color: #888;
+            font-size: 12px;
+            pointer-events: none;
+        }
+        .custom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
+        }
+        .custom-name-input {
+            background: transparent;
+            border: none;
+            color: #ddd;
+            font-size: 14px;
+            font-weight: bold;
+            width: 50%;
+            outline: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+        .custom-name-input:focus { border-bottom: 1px solid #666; }
+        .custom-val-wrapper { width: 45%; }
+        .total-area {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border-color);
+        }
+        .total-label { font-size: 12px; color: var(--text-sub); margin-bottom: 5px; }
+        .total-amount { font-size: 28px; font-weight: bold; color: #4DB6AC; }
+        .calc-icon {
+            background-color: #364B52;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        .bottom-fixed {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: var(--bg-color);
+            z-index: 200;
+            border-top: 1px solid #333;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .line-btn-area { padding: 15px 20px; }
+        .line-btn {
+            background-color: var(--accent-green);
+            color: white;
+            width: 100%;
+            padding: 15px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+        .line-btn:active { transform: scale(0.98); }
+        .nav-bar {
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            background-color: #263238;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #5F7D8B;
+            font-size: 10px;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .nav-item i { font-size: 20px; }
+        .nav-item.active { color: #4DB6AC; }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="icon-btn"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="header-title">経費入力</div>
+        <button class="icon-btn icon-sub"><i class="fa-solid fa-clock-rotate-left"></i></button>
+    </header>
+
+    <div class="container">
+        <!-- 保険・税金 -->
+        <div class="section-title">保険・税金</div>
+        <div class="grid-row">
+            <div class="card">
+                <label class="label">自賠責保険</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="自賠責保険" value="17540">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+            <div class="card">
+                <label class="label">重量税</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="重量税" placeholder="0">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 手数料・テスター -->
+        <div class="section-title">手数料・テスター</div>
+        <div class="grid-row">
+            <div class="card">
+                <label class="label">検査手数料</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="検査手数料" value="2200">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+            <div class="card">
+                <label class="label">テスター代</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="テスター代" value="900">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 燃料・部品 -->
+        <div class="section-title">燃料・部品</div>
+        <div class="grid-row">
+            <div class="card">
+                <label class="label">ガソリン代</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="ガソリン代" placeholder="0">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+            <div class="card">
+                <label class="label">部品代</label>
+                <div class="input-wrapper">
+                    <input type="number" class="calc-target" data-name="部品代" placeholder="0">
+                    <span class="unit">円</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- カスタム項目 -->
+        <div class="section-title">カスタム項目</div>
+        <div class="custom-row">
+            <input type="text" class="custom-name-input" value="項目名 1">
+            <div class="input-wrapper custom-val-wrapper">
+                <input type="number" class="calc-target custom-amount" placeholder="0">
+                <span class="unit">円</span>
+            </div>
+        </div>
+        <div class="custom-row">
+            <input type="text" class="custom-name-input" value="項目名 2">
+            <div class="input-wrapper custom-val-wrapper">
+                <input type="number" class="calc-target custom-amount" placeholder="0">
+                <span class="unit">円</span>
+            </div>
+        </div>
+
+        <!-- 合計金額 -->
+        <div class="total-area">
+            <div>
+                <div class="total-label">合計金額</div>
+                <div class="total-amount" id="display-total">¥ 0</div>
+            </div>
+            <div class="calc-icon"><i class="fa-solid fa-calculator"></i></div>
+        </div>
+    </div>
+
+    <!-- 下部固定 -->
+    <div class="bottom-fixed">
+        <div class="line-btn-area">
+            <button class="line-btn" onclick="sendToLine()">
+                <i class="fa-solid fa-comment"></i> LINEへ送る
+            </button>
+        </div>
+        <div class="nav-bar">
+            <div class="nav-item active"><i class="fa-solid fa-house"></i><span>ホーム</span></div>
+            <div class="nav-item"><i class="fa-solid fa-clock-rotate-left"></i><span>履歴</span></div>
+            <div class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></div>
+        </div>
+    </div>
+
+    <script>
+        // 計算とLINE送信ロジック（変更なし）
+        const inputs = document.querySelectorAll('.calc-target');
+        const displayTotal = document.getElementById('display-total');
+
+        function calculateTotal() {
+            let total = 0;
+            inputs.forEach(input => {
+                const val = parseInt(input.value);
+                if (!isNaN(val)) total += val;
+            });
+            displayTotal.textContent = "¥ " + total.toLocaleString();
+            return total;
+        }
+
+        inputs.forEach(input => input.addEventListener('input', calculateTotal));
+
+        function sendToLine() {
+            let message = "【経費精算】\n";
+            let hasItem = false;
+            document.querySelectorAll('.card .calc-target').forEach(input => {
+                const val = parseInt(input.value);
+                const name = input.getAttribute('data-name');
+                if (!isNaN(val) && val > 0) {
+                    message += `${name}: ${val.toLocaleString()}円\n`;
+                    hasItem = true;
+                }
+            });
+            const customRows = document.querySelectorAll('.custom-row');
+            customRows.forEach(row => {
+                const nameInput = row.querySelector('.custom-name-input');
+                const amountInput = row.querySelector('.custom-amount');
+                const val = parseInt(amountInput.value);
+                if (!isNaN(val) && val > 0) {
+                    const itemName = nameInput.value || "未設定項目";
+                    message += `${itemName}: ${val.toLocaleString()}円\n`;
+                    hasItem = true;
+                }
+            });
+            const total = calculateTotal();
+            if (!hasItem) { alert("送信する項目がありません"); return; }
+            message += `----------------\n合計: ${total.toLocaleString()}円`;
+            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(message)}`;
+        }
+        calculateTotal();
+
+        // Service Workerの登録（PWA化のキモ）
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('SW registered!', reg))
+                    .catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+    </script>
+</body>
+</html>
