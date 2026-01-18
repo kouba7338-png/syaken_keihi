@@ -45,7 +45,7 @@
             --input-bg: #0F172A;
             --text-main: #E2E8F0;
             --text-sub: #94A3B8;
-            --accent-green: #3B82F6; /* 青系アクセント */
+            --accent-green: #3B82F6;
             --border-color: #334155;
             --nav-bg: #1E293B;
             --icon-active: #60A5FA;
@@ -63,13 +63,11 @@
         body {
             background-color: var(--bg-color);
             color: var(--text-main);
-            /* 下部固定エリア + iPhoneセーフエリア */
             padding-bottom: calc(140px + env(safe-area-inset-bottom));
             padding-top: env(safe-area-inset-top);
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* ヘッダー */
         header {
             display: flex;
             align-items: center;
@@ -99,9 +97,8 @@
         }
         .icon-sub { color: var(--text-sub); }
 
-        /* コンテンツエリア */
         .container { padding: 10px 15px; }
-        .view-section { display: none; } /* タブ切り替え用 */
+        .view-section { display: none; }
         .view-section.active { display: block; animation: fadeIn 0.3s; }
 
         @keyframes fadeIn {
@@ -145,10 +142,7 @@
             padding: 0 10px;
             border: 1px solid var(--border-color);
         }
-        
-        .input-wrapper:focus-within {
-            border-color: var(--text-sub);
-        }
+        .input-wrapper:focus-within { border-color: var(--text-sub); }
 
         input[type="number"], input[type="text"] {
             width: 100%;
@@ -162,7 +156,6 @@
             outline: none;
         }
         
-        /* 備考欄用 */
         textarea {
             width: 100%;
             background-color: var(--input-bg);
@@ -190,7 +183,6 @@
             pointer-events: none;
         }
 
-        /* カスタム項目 */
         .custom-row {
             display: flex;
             align-items: center;
@@ -210,7 +202,6 @@
         }
         .custom-val-wrapper { width: 45%; }
 
-        /* 合計金額エリア */
         .total-area {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -221,16 +212,8 @@
             align-items: center;
             border: 1px solid var(--border-color);
         }
-        .total-label {
-            font-size: 12px;
-            color: var(--text-sub);
-            margin-bottom: 5px;
-        }
-        .total-amount {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--icon-active);
-        }
+        .total-label { font-size: 12px; color: var(--text-sub); margin-bottom: 5px; }
+        .total-amount { font-size: 28px; font-weight: bold; color: var(--icon-active); }
         .calc-icon {
             background-color: var(--border-color);
             color: var(--text-main);
@@ -243,7 +226,6 @@
             font-size: 18px;
         }
 
-        /* 設定画面用スタイル */
         .settings-group {
             background-color: var(--card-bg);
             border-radius: 12px;
@@ -257,10 +239,7 @@
             font-size: 14px;
             color: var(--text-main);
         }
-        .theme-buttons {
-            display: flex;
-            gap: 10px;
-        }
+        .theme-buttons { display: flex; gap: 10px; }
         .theme-btn {
             flex: 1;
             padding: 10px;
@@ -270,6 +249,7 @@
             color: var(--text-main);
             font-weight: bold;
             cursor: pointer;
+            text-align: center;
         }
         .theme-btn.active {
             border-color: var(--accent-green);
@@ -307,7 +287,6 @@
             cursor: pointer;
         }
 
-        /* 下部固定エリア */
         .bottom-fixed {
             position: fixed;
             bottom: 0;
@@ -318,7 +297,6 @@
             border-top: 1px solid var(--border-color);
             padding-bottom: env(safe-area-inset-bottom);
         }
-
         .line-btn-area { padding: 15px 20px; }
         .line-btn {
             background-color: var(--accent-green);
@@ -338,7 +316,6 @@
         }
         .line-btn:active { transform: scale(0.98); }
 
-        /* ナビゲーションバー */
         .nav-bar {
             display: flex;
             justify-content: space-around;
@@ -358,25 +335,20 @@
         }
         .nav-item i { font-size: 20px; }
         .nav-item.active { color: var(--icon-active); }
-
     </style>
 </head>
 <body>
 
-    <!-- ヘッダー -->
     <header>
-        <!-- 左上は今は機能なし -->
         <button class="icon-btn" style="opacity: 0;"><i class="fa-solid fa-chevron-left"></i></button> 
         <div class="header-title" id="header-title">経費入力</div>
-        <!-- リセットボタン -->
         <button class="icon-btn icon-sub" onclick="resetToDefaults()"><i class="fa-solid fa-rotate-right"></i></button>
     </header>
 
     <div class="container">
         
-        <!-- ======= ホーム（計算）ビュー ======= -->
+        <!-- ======= ホーム ======= -->
         <div id="view-home" class="view-section active">
-            
             <div class="section-title">保険・税金</div>
             <div class="grid-row">
                 <div class="card">
@@ -460,11 +432,10 @@
                 </div>
             </div>
 
-            <!-- 余白 -->
             <div style="height: 20px;"></div>
         </div>
 
-        <!-- ======= 設定ビュー ======= -->
+        <!-- ======= 設定 ======= -->
         <div id="view-settings" class="view-section">
             <div class="settings-group">
                 <div class="settings-header">テーマ設定</div>
@@ -510,7 +481,7 @@
 
     </div>
 
-    <!-- 下部固定エリア -->
+    <!-- 下部固定 -->
     <div class="bottom-fixed">
         <div class="line-btn-area" id="line-area">
             <button class="line-btn" onclick="sendToLine()">
@@ -523,7 +494,6 @@
                 <i class="fa-solid fa-house"></i>
                 <span>ホーム</span>
             </div>
-            <!-- 履歴は削除、代わりに設定を -->
             <div class="nav-item" id="nav-settings" onclick="switchTab('settings')">
                 <i class="fa-solid fa-gear"></i>
                 <span>設定</span>
@@ -535,59 +505,39 @@
         // デフォルト設定
         const defaultSettings = {
             theme: 'dark',
-            values: {
-                jibai: 17540,
-                weight: 0,
-                fee: 2200,
-                tester: 900,
-                gas: 0,
-                parts: 0
-            }
+            values: { jibai: 17540, weight: 0, fee: 2200, tester: 900, gas: 0, parts: 0 }
         };
-
-        // 現在の設定（ローカルストレージから読み込み）
         let currentSettings = JSON.parse(localStorage.getItem('expenseAppSettings')) || JSON.parse(JSON.stringify(defaultSettings));
 
-        // 要素取得
         const inputs = document.querySelectorAll('.calc-target');
         const displayTotal = document.getElementById('display-total');
         const headerTitle = document.getElementById('header-title');
         const lineArea = document.getElementById('line-area');
 
-        // アプリ初期化
         function initApp() {
             applyTheme(currentSettings.theme);
-            loadSettingsToInputs(); // 設定画面のinputに値をセット
-            resetToDefaults();      // 計算画面を初期値にする
+            loadSettingsToInputs();
+            resetToDefaults();
             calculateTotal();
         }
 
-        // テーマ適用
         function applyTheme(themeName) {
-            document.body.className = ''; // クラスリセット
-            if (themeName !== 'dark') {
-                document.body.classList.add('theme-' + themeName);
-            }
-            // 設定画面のボタン状態更新
+            document.body.className = '';
+            if (themeName !== 'dark') document.body.classList.add('theme-' + themeName);
             document.querySelectorAll('.theme-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = Array.from(document.querySelectorAll('.theme-btn')).find(b => b.textContent.toLowerCase().includes(themeName));
             if(activeBtn) activeBtn.classList.add('active');
             
-            // meta theme-colorも更新（Androidステータスバー用）
             const metaTheme = document.getElementById('meta-theme-color');
             if(themeName === 'light') metaTheme.content = "#F0F2F5";
             else if(themeName === 'midnight') metaTheme.content = "#0F172A";
             else metaTheme.content = "#1F292E";
         }
 
-        // テーマ選択（UIイベント）
         function setTheme(theme, btn) {
             applyTheme(theme);
-            // 保存は「設定を保存」ボタンで行うが、プレビューとして即時反映させる
-            // ただしcurrentSettingsはまだ更新しない
         }
 
-        // 設定値を入力欄に反映
         function loadSettingsToInputs() {
             document.getElementById('set-jibai').value = currentSettings.values.jibai;
             document.getElementById('set-weight').value = currentSettings.values.weight;
@@ -597,14 +547,11 @@
             document.getElementById('set-parts').value = currentSettings.values.parts;
         }
 
-        // 設定保存
         function saveSettings() {
-            // テーマ取得
             let selectedTheme = 'dark';
             if (document.body.classList.contains('theme-light')) selectedTheme = 'light';
             if (document.body.classList.contains('theme-midnight')) selectedTheme = 'midnight';
 
-            // 値取得
             const newValues = {
                 jibai: parseInt(document.getElementById('set-jibai').value) || 0,
                 weight: parseInt(document.getElementById('set-weight').value) || 0,
@@ -614,23 +561,15 @@
                 parts: parseInt(document.getElementById('set-parts').value) || 0
             };
 
-            currentSettings = {
-                theme: selectedTheme,
-                values: newValues
-            };
-
+            currentSettings = { theme: selectedTheme, values: newValues };
             localStorage.setItem('expenseAppSettings', JSON.stringify(currentSettings));
-            
             alert('設定を保存しました');
-            resetToDefaults(); // 計算画面に反映
-            switchTab('home'); // ホームに戻る
+            resetToDefaults();
+            switchTab('home');
         }
 
-        // リセット（初期値に戻す）
         function resetToDefaults() {
             const v = currentSettings.values;
-            
-            // 各Inputに値をセット
             setVal('inp-jibai', v.jibai);
             setVal('inp-weight', v.weight);
             setVal('inp-fee', v.fee);
@@ -638,20 +577,17 @@
             setVal('inp-gas', v.gas);
             setVal('inp-parts', v.parts);
 
-            // カスタム項目と備考はクリア
             document.getElementById('inp-c1-val').value = '';
             document.getElementById('inp-c2-val').value = '';
             document.getElementById('notes').value = '';
-
             calculateTotal();
         }
 
         function setVal(id, val) {
             const el = document.getElementById(id);
-            if(el) el.value = val === 0 ? '' : val; // 0なら空文字の方が見やすい場合もあるが、placeholderあるのでOK。要望通り初期値を入れる。
+            if(el) el.value = val === 0 ? '' : val;
         }
 
-        // タブ切り替え
         function switchTab(tabName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -661,45 +597,37 @@
 
             if (tabName === 'home') {
                 headerTitle.textContent = "経費入力";
-                lineArea.style.display = 'block'; // LINEボタン表示
+                lineArea.style.display = 'block';
                 document.querySelector('.fa-rotate-right').parentElement.style.visibility = 'visible';
             } else {
                 headerTitle.textContent = "設定";
-                lineArea.style.display = 'none'; // 設定画面ではLINEボタン隠す
+                lineArea.style.display = 'none';
                 document.querySelector('.fa-rotate-right').parentElement.style.visibility = 'hidden';
             }
         }
 
-        // 計算ロジック
+        // 修正箇所：値を返すように変更
         function calculateTotal() {
             let total = 0;
             inputs.forEach(input => {
                 const val = parseInt(input.value);
-                if (!isNaN(val)) {
-                    total += val;
-                }
+                if (!isNaN(val)) total += val;
             });
             displayTotal.textContent = "¥ " + total.toLocaleString();
+            return total; // ★ここが抜けていました！
         }
 
-        inputs.forEach(input => {
-            input.addEventListener('input', calculateTotal);
-        });
+        inputs.forEach(input => input.addEventListener('input', calculateTotal));
 
-        // LINE用フォーマッター（簡易的な右揃え）
         function formatLineItem(name, price) {
-            // 全角スペースを使ってパディングを試みる（LINEのフォントサイズ設定によるが、ある程度揃う）
             const priceStr = price.toLocaleString() + "円";
-            // 名前と金額の間に全角スペースを入れる
             return `${name}　${priceStr}`;
         }
 
-        // LINE送信
         function sendToLine() {
             let message = "【経費精算】\n\n";
             let hasItem = false;
 
-            // 固定項目
             document.querySelectorAll('.card .calc-target').forEach(input => {
                 const val = parseInt(input.value);
                 const name = input.getAttribute('data-name');
@@ -709,12 +637,10 @@
                 }
             });
 
-            // カスタム項目
             document.querySelectorAll('.custom-row').forEach(row => {
                 const nameInput = row.querySelector('.custom-name-input');
                 const valInput = row.querySelector('.calc-target');
                 const val = parseInt(valInput.value);
-
                 if (!isNaN(val) && val > 0) {
                     const itemName = nameInput.value || "未設定";
                     message += formatLineItem(itemName, val) + "\n";
@@ -722,20 +648,16 @@
                 }
             });
 
-            const total = calculateTotal().toString(); // calculateTotal returns void in current logic, need fix
-            // 再計算して合計取得
-            let totalVal = 0;
-            inputs.forEach(i => totalVal += (parseInt(i.value)||0));
+            // 修正箇所：正しく合計を取得
+            const total = calculateTotal(); 
             
             if (!hasItem) {
                 alert("送信する項目がありません（0円は除外されます）");
                 return;
             }
 
-            // 備考欄
             const notes = document.getElementById('notes').value.trim();
-
-            message += `\n----------------\n合計　${totalVal.toLocaleString()}円`;
+            message += `\n----------------\n合計　${total.toLocaleString()}円`;
             
             if(notes) {
                 message += `\n\n■備考\n${notes}`;
@@ -745,16 +667,13 @@
             window.location.href = `https://line.me/R/msg/text/?${encodedMessage}`;
         }
 
-        // Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js');
             });
         }
 
-        // 初回実行
         initApp();
-
     </script>
 </body>
 </html>
